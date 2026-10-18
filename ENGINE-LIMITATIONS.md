@@ -27,4 +27,4 @@ No binary patches suppress these failures. Useful next evidence: exact launcher/
 
 ## Mobile and performance
 
-The support website is responsive. The engine still requires WebGPU, memory64, shared memory and sufficient device resources; experimental touch controls are implemented, with automated multi-touch/input-release tests but no phone gameplay validation. A phone displaying the launcher is not gameplay validation. Profiles change real existing engine settings, but no universal FPS increase is promised.
+The support website is responsive. The engine still requires WebGPU, memory64, shared memory and sufficient device resources; experimental touch controls are implemented, with automated multi-touch/input-release tests but no phone gameplay validation. Devices without native BC texture support use a JavaScript/WebGPU upload fallback for BC1-BC5 textures. This is slower and uses more memory than native BC; BC6H/BC7 uploads currently use transparent placeholders. A phone displaying the launcher is not gameplay validation. Profiles change real existing engine settings, but no universal FPS increase is promised.

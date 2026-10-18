@@ -26,7 +26,6 @@ if (isSecureContext && crossOriginIsolated && typeof SharedArrayBuffer !== 'unde
     && WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,5,4,1,7,0,1])) && navigator.gpu) {
   try { startupAdapter = await navigator.gpu.requestAdapter({powerPreference:'high-performance'}); } catch {}
 }
-if (startupAdapter && !startupAdapter.features.has('texture-compression-bc')) startupFailure = 'texture-compression-bc';
 if (!startupAdapter || startupFailure) {
   location.replace('/__support/?startup=' + (startupFailure || 'gpu-adapter'));
   throw new Error('Browser startup checks failed; see the compatibility page.');
@@ -39,7 +38,7 @@ def patch_startup(code):
     marker = '<script type="module">'
     if code.count(marker) != 1 or code.count('<head>') != 1:
         raise ValueError('Unrecognized game page: expected one module and head')
-    code = code.replace('<head>', '<head>\n<script src="/chunk-index.js"></script><script src="/chunk-fetch.js"></script>', 1)
+    code = code.replace('<head>', '<head>\n<script src="/chunk-index.js"></script><script src="/chunk-fetch.js"></script><script src="/__support/bc-fallback.js"></script>', 1)
     return code.replace(marker, marker + '\n' + PREFLIGHT, 1)
 
 

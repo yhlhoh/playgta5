@@ -30,7 +30,7 @@ def improve_game_page(code):
     link = (SUPPORT / 'overlay.html').read_text(encoding='utf-8')
     marker = 'Atomics.store(w, MY, H >> 1);'
     if code.count(marker) == 1:
-        code = code.replace('<head>', '<head><script src="/__support/controller.js"></script><script defer src="/__support/touch.js"></script>', 1)
+        code = code.replace('<head>', '<head><script src="/__support/bc-fallback.js"></script><script src="/__support/controller.js"></script><script defer src="/__support/touch.js"></script>', 1)
         code = code.replace(marker, marker + '''
 if (!window.PlayGTA5Enhanced) {
     const mode = document.createElement('button');
@@ -74,7 +74,13 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_header('Cache-Control', 'no-store')
             self.end_headers()
             return io.BytesIO(body)
-        support_files = {'/__support/': 'index.html', '/__support/check.js': 'check.js', '/__support/controller.js': 'controller.js', '/__support/touch.js': 'touch.js'}
+        support_files = {
+            '/__support/': 'index.html',
+            '/__support/check.js': 'check.js',
+            '/__support/bc-fallback.js': 'bc-fallback.js',
+            '/__support/controller.js': 'controller.js',
+            '/__support/touch.js': 'touch.js'
+        }
         support_name = support_files.get(urlsplit(self.path).path)
         if support_name:
             path = SUPPORT / support_name

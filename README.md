@@ -29,7 +29,7 @@ Connect a standard controller by USB or Bluetooth, open the game in Chrome/Edge,
 
 Press **F8** or **Hide** to hide the custom help and controller/cheat overlays together. A small **Tools** button restores them. This does not hide the game's native HUD.
 
-The hub adapts to phone screens; **touch controls are experimental and have not been tested on phone hardware**, and mobile browsers must meet all engine requirements. Multiplayer/GTA Online is also not implemented: see [engine limitations and the work needed](ENGINE-LIMITATIONS.md). Minimap roads, vehicle audio/entry animations and the reported minimap initialization crash remain unresolved.
+The hub adapts to phone screens; **touch controls are experimental and have not been tested on phone hardware**. Devices without native BC texture support now use a WebGPU software fallback for BC1-BC5 textures; this increases CPU use and memory consumption, and BC6H/BC7 textures may appear as transparent placeholders. Mobile browsers must still provide WebGPU, shared memory and Memory64. Multiplayer/GTA Online is also not implemented: see [engine limitations and the work needed](ENGINE-LIMITATIONS.md). Minimap roads, vehicle audio/entry animations and the reported minimap initialization crash remain unresolved.
 
 ## Stuck at 66%? Check this first
 

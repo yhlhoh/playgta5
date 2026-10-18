@@ -55,7 +55,9 @@ async function check() {
     if (!adapter) throw new Error('No WebGPU adapter available. Check chrome://gpu or edge://gpu.');
     report.adapter = adapter.info ? { vendor: adapter.info.vendor, architecture: adapter.info.architecture, description: adapter.info.description } : 'not reported';
     report.features = [...adapter.features].sort();
-    if (!adapter.features.has('texture-compression-bc')) throw new Error('This GPU/browser lacks BC texture compression, which the current game renderer uses without a fallback. Lower-memory mode cannot fix this; mobile texture support requires a renderer update.');
+    report.bcTextureFallback = Boolean(globalThis.PlayGTA5BCFallback?.active);
+    report.nativeBCTextureCompression = Boolean(globalThis.PlayGTA5BCFallback?.nativeBC);
+    if (!adapter.features.has('texture-compression-bc')) throw new Error('This browser has neither native BC texture compression nor the software fallback.');
     report.limits = Object.fromEntries(['maxBufferSize', 'maxStorageBufferBindingSize', 'maxTextureDimension2D', 'maxInterStageShaderVariables'].map(k => [k, adapter.limits[k]]));
     device = await adapter.requestDevice();
     report.deviceCreation = 'passed (basic device only; gameplay uses additional features)';
@@ -65,7 +67,9 @@ async function check() {
   const passed = !report.error && report.crossOriginIsolated && report.sharedArrayBuffer && report.offscreenCanvas && report.wasmSignature;
   allowLaunch(passed);
   document.getElementById('status').textContent = passed
-    ? 'Basic checks passed. Start with lower memory; gameplay still depends on your GPU and the complete game data.'
+    ? (report.bcTextureFallback
+      ? 'Basic checks passed. Software BC texture decoding is enabled; expect higher CPU use and memory consumption.'
+      : 'Basic checks passed. Start with lower memory; gameplay still depends on your GPU and the complete game data.')
     : (report.error || 'Game file delivery check failed. See the report below.') + ' Play links are disabled to prevent returning here repeatedly.';
 }
 document.getElementById('copy').addEventListener('click', async () => {

@@ -32,15 +32,15 @@ class PagesBuildTests(unittest.TestCase):
         subprocess.run(['node', 'tests/test_chunk_fetch.cjs'], check=True, timeout=30)
 
     def test_hosted_startup_routes_missing_features_to_help(self):
-        for feature in ['ok', 'gpu', 'memory64', 'isolation', 'context', 'bc']:
+        for feature in ['ok', 'gpu', 'memory64', 'isolation', 'context']:
             setup = f"""
 const assert=require('node:assert/strict'), failure={feature!r};
 let redirected=false;
-const reasons={{gpu:'gpu-adapter',memory64:'memory64',isolation:'shared-memory',context:'secure-context',bc:'texture-compression-bc'}};
+const reasons={{gpu:'gpu-adapter',memory64:'memory64',isolation:'shared-memory',context:'secure-context'}};
 const location={{replace(path){{assert.equal(path,'/__support/?startup='+reasons[failure]); redirected=true;}}}};
 const isSecureContext=failure!=='context', crossOriginIsolated=failure!=='isolation';
 const OffscreenCanvas=function(){{}}, WebAssembly={{validate:()=>failure!=='memory64'}};
-const navigator={{gpu:{{requestAdapter:async()=>failure==='gpu'?null:{{features:new Set(failure==='bc'?[]:['texture-compression-bc'])}}}}}};
+const navigator={{gpu:{{requestAdapter:async()=>failure==='gpu'?null:{{features:new Set(['texture-compression-bc'])}}}}}};
 (async()=>{{try {{ {PREFLIGHT} }} catch(e) {{if(failure==='ok')throw e;}}
 assert.equal(redirected, failure!=='ok');}})().catch(e=>{{console.error(e);process.exitCode=1;}});
 """
